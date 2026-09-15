@@ -1,4 +1,4 @@
-# git-agile-dev-culture - Loja Online EAD
+Studio Lídia Siqueira / Sara Variedades - Loja Online EAD
 
 Repositório da disciplina **Git, Agile & Dev Culture** - UniFECAF / Ser Educacional
 Autor: **Rodolfo F. Farias** - Graduando em Análise e Desenvolvimento de Sistemas
@@ -18,7 +18,11 @@ Projeto de loja online desenvolvido para aplicar conceitos de Git, metodologias 
 ## Como executar
 git clone https://github.com/rodolfo201ff-cell/git-agile-dev-culture.git
 
+## Cultura Ágil aplicada (Videoaula 9)
+- Product Owner define o QUE tem valor no Backlog (Issues)
+- Time Dev decide COMO fazer e puxa para In Progress (GitHub Projects)
+- Valor: Indivíduos e interação sobre processos
+
 ## Autor
-Rodolfo F. Farias - 2026.2
-Graduando em ADS / MBA em Big Data, Analytics e IA
+Rodolfo F. Farias...
 
