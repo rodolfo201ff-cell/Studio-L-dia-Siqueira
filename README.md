@@ -37,4 +37,6 @@ cd Studio-L-dia-Siqueira
 Veja o fluxo de Pull Request em CONTRIBUTING.md
 ## Autor
 Rodolfo F. Farias - 2026.2
-
+## Documentação que sobrevive ao tempo (Videoaula 15)
+- **ADR:** ver em `docs/adr/001-site-estatico.md` - por que escolhemos site estático
+- **Wiki:** no GitHub > aba Wiki - como trocar WhatsApp e fotos do portfólio
