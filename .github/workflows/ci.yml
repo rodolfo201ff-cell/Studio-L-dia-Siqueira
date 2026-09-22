@@ -1,0 +1,15 @@
+name: CI
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verificar arquivos do site
+        run: |
+          ls -la
+          test -f index.html && echo "index.html OK"
+          test -f style.css && echo "style.css OK"
+          test -f script.js && echo "script.js OK"
