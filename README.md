@@ -22,7 +22,19 @@ Repositório da disciplina **Git, Agile & Dev Culture** - UniFECAF
 - Product Owner define o QUE tem valor no Backlog
 - Time Dev puxa para In Progress no GitHub Projects
 - Valor: Indivíduos e interação sobre processos
+## Como rodar
+git clone https://github.com/rodolfo201ff-cell/Studio-L-dia-Siqueira.git
+cd Studio-L-dia-Siqueira
+# depois abra o index.html com Live Server no VS Code
 
+## Estrutura
+/index.html - código da aplicação
+/style.css - estilos
+/script.js - javascript
+/logo.png - imagens
+
+## Como contribuir
+Veja o fluxo de Pull Request em CONTRIBUTING.md
 ## Autor
 Rodolfo F. Farias - 2026.2
 
