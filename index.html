@@ -1,85 +1,101 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Studio Lidia Siqueira</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin - Studio Lidia Siqueira</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body{font-family:Arial;background:#fff5f7;margin:0}
-header{background:#fff;text-align:center;padding:15px;border-bottom:3px solid #b03060;position:relative}
-.menu{position:absolute;right:15px;top:15px;font-size:28px;background:none;border:0}
-.logo{width:130px;height:130px;border-radius:50%;border:4px solid #b03060}
-h1{color:#b03060}
-.card{background:#fff;border-radius:12px;padding:15px;margin:10px;box-shadow:0 2px 6px rgba(0,0,0,.1);border-left:5px solid #b03060}
-.btn{background:#b03060;color:#fff;border:0;padding:12px;width:100%;border-radius:8px;font-weight:bold;margin-top:6px;cursor:pointer}
-input,select{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #ccc;box-sizing:border-box}
-#admin{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff5f7;z-index:99;padding:15px;overflow:auto}
+body{font-family:Arial;background:#fff5f7;margin:0;padding:10px}
+.card{background:#fff;padding:15px;border-radius:10px;margin:10px 0;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+.btn{background:#b03060;color:#fff;border:0;padding:10px;border-radius:8px;cursor:pointer;margin:5px 0;width:100%}
+.btn2{background:#666;color:#fff;border:0;padding:6px;border-radius:6px;cursor:pointer;font-size:12px}
+input,select{width:100%;padding:10px;margin:5px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
+.alerta{background:#ffdddd;border-left:5px solid red}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+h2{color:#b03060}
 </style>
 </head>
 <body>
-<header>
-<button class="menu" onclick="abrirAdmin()">...</button>
-<img src="logo.png" class="logo" onerror="this.style.display='none'">
-<h1>Studio Lidia Siqueira</h1>
-<a href="https://wa.me/5591984023502" style="background:#b03060;color:#fff;padding:10px 20px;border-radius:20px;text-decoration:none">Agendar WhatsApp</a>
-</header>
-
-<div style="max-width:600px;margin:auto">
-<h2 style="text-align:center;color:#b03060">Servicos e Valores</h2>
-<div id="lista"></div>
-<div class="card">
-<h3>Agendar</h3>
-<input id="nome" placeholder="Seu nome">
-<input id="data" type="date">
-<select id="hora"><option>08:00</option><option>09:00</option><option>10:00</option><option>14:00</option><option>15:00</option></select>
-<div id="resumo"></div>
-<button class="btn" style="background:#25D366" onclick="confirmar()">Confirmar</button>
+<h2>Admin Studio Lidia Siqueira</h2>
+<div class="grid">
+<div class="card"><b>Hoje</b><h3 id="fatHoje">R$0</h3></div>
+<div class="card"><b>Mês</b><h3 id="fatMes">R$0</h3></div>
+<div class="card"><b>Lucro Mês</b><h3 id="lucroMes">R$0</h3></div>
+<div class="card"><b>Alertas</b><h3 id="numAlertas">0</h3></div>
 </div>
+<div class="card" id="alertas"></div>
+
+<div class="card"><h3>Lançar Venda</h3>
+<select id="vServ"></select><input id="vCli" placeholder="Cliente">
+<select id="vPag"><option>Pix</option><option>Cartão Crédito</option><option>Débito</option><option>Dinheiro</option></select>
+<button class="btn" onclick="vender()">Concluir e Baixar Estoque</button>
 </div>
 
-<div id="admin">
-<h2 style="color:#b03060">Administracao <button onclick="document.getElementById('admin').style.display='none'">X</button></h2>
-<div id="conteudoA"></div>
+<div class="card"><h3>Produtos</h3>
+<input id="pNome" placeholder="Nome"><input id="pQtd" type="number" placeholder="Qtd atual">
+<input id="pMin" type="number" placeholder="Qtd mínima"><input id="pCusto" type="number" placeholder="Custo R$">
+<button class="btn" onclick="addProd()">Adicionar</button><div id="listaProd"></div>
 </div>
+
+<div class="card"><h3>Serviços + Insumos</h3>
+<input id="sNome" placeholder="Nome serviço"><input id="sPreco" type="number" placeholder="Preço R$">
+<button class="btn" onclick="addServ()">Adicionar Serviço</button>
+<div id="listaServ"></div>
+</div>
+
+<div class="card"><h3>Vincular Insumo ao Serviço</h3>
+<select id="viServ"></select><select id="viProd"></select>
+<input id="viQtd" type="number" placeholder="Qtd gasta por sessão">
+<button class="btn" onclick="vincular()">Vincular</button>
+</div>
+
+<div class="card"><h3>Reposição</h3><select id="rProd"></select><input id="rQtd" type="number" placeholder="Qtd">
+<button class="btn" onclick="repor()">Adicionar</button></div>
+
+<div class="card"><h3>Gráficos</h3><canvas id="g1"></canvas><canvas id="g2" style="margin-top:20px"></canvas></div>
+<div class="card"><h3>Vendas</h3><div id="listaVendas"></div></div>
 
 <script>
-var servs = [
-["Limpeza de pele profunda",60],
-["Drenagem linfatica corporal",130],
-["Peeling quimico",350],
-["Depilacao a laser",140],
-["Botox - 1 area",1200],
-["Preenchimento Bigode Chines",1800],
-["Harmonizacao Facial",350],
-["Fios PDO",500]
-];
-var sel = null;
-function render(){
-  var h = "";
-  for(var i=0;i<servs.length;i++){
-    h += '<div class="card"><b>'+servs[i][0]+'</b><br><b style="color:#b03060">R$ '+servs[i][1].toFixed(2)+'</b><br><button class="btn" onclick="esc('+i+')">Escolher</button></div>';
-  }
-  document.getElementById('lista').innerHTML = h;
+let DB=JSON.parse(localStorage.getItem('studioDB2')||'{"prod":[],"serv":[],"vendas":[]}');
+function save(){localStorage.setItem('studioDB2',JSON.stringify(DB));atualizar();}
+function addProd(){DB.prod.push({nome:pNome.value,qtd:+pQtd.value,min:+pMin.value,custo:+pCusto.value});pNome.value=pQtd.value=pMin.value=pCusto.value='';save();}
+function addServ(){DB.serv.push({nome:sNome.value,preco:+sPreco.value,insumos:[]});sNome.value=sPreco.value='';save();}
+function vincular(){
+ let s=DB.serv[+viServ.value], p=DB.prod[+viProd.value], q=+viQtd.value;
+ s.insumos.push({nome:p.nome,qtd:q,custo:q*p.custo}); save(); alert('Vinculado!');
 }
-function esc(i){
-  sel = i;
-  document.getElementById('resumo').innerHTML = '<p><b>'+servs[i][0]+'</b><br>Sinal 50%: R$ '+(servs[i][1]/2).toFixed(2)+'<br>PIX: 91984023502</p>';
+function repor(){DB.prod[+rProd.value].qtd+=+rQtd.value;save();}
+function vender(){
+ let s=DB.serv[+vServ.value]; if(!s||!vCli.value){alert('Preencha');return;}
+ let custoInsumos=0;
+ s.insumos.forEach(ins=>{let pr=DB.prod.find(x=>x.nome===ins.nome); if(pr){pr.qtd-=ins.qtd; custoInsumos+=ins.custo;}});
+ DB.vendas.push({data:new Date().toISOString(),cli:vCli.value,serv:s.nome,valor:s.preco,pag:vPag.value,custo:custoInsumos});
+ vCli.value='';save();alert('Venda concluída com baixa!');
 }
-function confirmar(){
-  var n = document.getElementById('nome').value;
-  var d = document.getElementById('data').value;
-  if(sel===null||!n||!d){alert('Escolha servico, nome e data');return;}
-  window.open('https://wa.me/5591984023502?text='+encodeURIComponent('Ola sou '+n+' quero '+servs[sel][0]+' dia '+d));
+function atualizar(){
+ let hoje=new Date().toISOString().slice(0,10), mes=hoje.slice(0,7), fh=0,fm=0,cm=0;
+ DB.vendas.forEach(v=>{if(v.data.slice(0,10)===hoje)fh+=v.valor; if(v.data.slice(0,7)===mes){fm+=v.valor;cm+=v.custo;}});
+ fatHoje.textContent='R$ '+fh.toFixed(2); fatMes.textContent='R$ '+fm.toFixed(2); lucroMes.textContent='R$ '+(fm-cm).toFixed(2);
+ let al='',n=0; DB.prod.forEach(p=>{if(p.qtd<=p.min){n++;al+=`<div class="card alerta"><b>${p.nome}</b> - ${p.qtd} (min ${p.min})</div>`;}});
+ numAlertas.textContent=n; alertas.innerHTML='<h3>Alertas</h3>'+(al||'OK');
+ listaProd.innerHTML=DB.prod.map(p=>`<div>${p.nome} - ${p.qtd}un - R$${p.custo}</div>`).join('');
+ listaServ.innerHTML=DB.serv.map(s=>`<div style="margin:8px 0;border-bottom:1px solid #eee"><b>${s.nome}</b> R$${s.preco}<br><small>${s.insumos.map(i=>i.nome+': '+i.qtd).join(', ')||'sem insumos'}</small></div>`).join('');
+ let os=DB.serv.map((s,i)=>`<option value="${i}">${s.nome}</option>`).join('');
+ vServ.innerHTML=os; viServ.innerHTML=os;
+ let op=DB.prod.map((p,i)=>`<option value="${i}">${p.nome}</option>`).join('');
+ viProd.innerHTML=op; rProd.innerHTML=op;
+ listaVendas.innerHTML=DB.vendas.map(v=>`<div>${v.data.slice(0,10)} - ${v.cli} - ${v.serv} R$${v.valor}</div>`).join('');
+ desenhar();
 }
-function abrirAdmin(){
-  if(prompt('Senha:')==='1234'){
-    document.getElementById('admin').style.display='block';
-    var ha='';
-    for(var j=0;j<servs.length;j++){ha+='<div class="card">'+servs[j][0]+' - R$ '+servs[j][1].toFixed(2)+'</div>';}
-    document.getElementById('conteudoA').innerHTML=ha;
-  }
+let c1,c2;
+function desenhar(){
+ if(c1)c1.destroy(); if(c2)c2.destroy();
+ let pd={};DB.vendas.forEach(v=>{let d=v.data.slice(0,10);pd[d]=(pd[d]||0)+v.valor;});
+ c1=new Chart(g1,{type:'line',data:{labels:Object.keys(pd),[STRIPPED]
+ let pp={};DB.vendas.forEach(v=>{pp[v.pag]=(pp[v.pag]||0)+v.valor;});
+ c2=new Chart(g2,{type:'doughnut',data:{labels:Object.keys(pp),[STRIPPED]
 }
-render();
+atualizar();
 </script>
 </body>
 </html>
