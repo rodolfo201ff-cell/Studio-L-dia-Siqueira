@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio Lidia Siqueira</title>
+<style>
+body{font-family:Arial;background:#fff5f7;margin:0}
+header{text-align:center;padding:20px;background:#fff;border-bottom:3px solid #b03060}
+.logo{width:160px;height:160px;border-radius:50%;display:block;margin:10px auto;border:5px solid #b03060;object-fit:cover}
+h1{color:#b03060}.tabs{display:flex;background:#b03060}
+.tabs button{flex:1;padding:14px;border:0;background:#b03060;color:#fff;font-weight:bold}
+.tabs button.active{background:#8e244d}.sec{display:none;padding:15px;max-width:600px;margin:auto}
+.sec.active{display:block}.card{background:#fff;border-radius:12px;padding:15px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.1);border-left:5px solid #b03060}
+.btn{background:#25D366;color:#fff;border:0;padding:14px;width:100%;border-radius:10px;font-weight:bold;margin-top:10px}
+input,select{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #ccc;box-sizing:border-box}
+.pix{background:#e8f5e9;border:2px dashed #2e7d32;padding:12px;border-radius:10px;text-align:center}
+</style></head><body>
+<header><img src="logo.png" class="logo"><h1>Studio Lidia Siqueira</h1>
+<p>Estetica Avancada - Belem do Para</p>
+<a href="https://wa.me/5591984023502" style="background:#b03060;color:#fff;padding:10px 20px;border-radius:20px;text-decoration:none;font-weight:bold">WhatsApp</a></header>
+<div class="tabs">
+<button class="active" onclick="tab('ag',this)">Agendar</button>
+<button onclick="tab('ad',this)">Admin</button>
+<button onclick="tab('fi',this)">Financeiro</button></div>
+<div id="ag" class="sec active"><h2>Escolha o procedimento</h2>
+<input id="busca" placeholder="Buscar..." oninput="render()"><div id="lista"></div><h3>Seus dados</h3>
+<input id="nome" placeholder="Seu nome"><input id="data" type="date">
+<select id="hora"><option>08:00</option><option>09:00</option><option>10:00</option><option>14:00</option><option>15:00</option><option>16:00</option></select>
+<div id="resumo"></div><button class="btn" onclick="agendar()">Confirmar no WhatsApp</button></div>
+<div id="ad" class="sec"><h2>Admin</h2><button class="btn" style="background:#b03060" onclick="novoServ()">+ Novo Servico</button><div id="listaAd"></div></div>
+<div id="fi" class="sec"><h2>Financeiro</h2><div class="card">Faturamento: R$ <span id="fat">0</span></div><div id="extrato"></div></div>
+<script>
+let servs=[{n:'Limpeza de pele',p:99.99},{n:'Peeling de algas',p:99.99},{n:'PROTOCOLO PELE COREANA',p:219.99}];
+let ags=[];let sel=null;
+function tab(id,b){document.querySelectorAll('.sec').forEach(e=>e.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tabs button').forEach(e=>e.classList.remove('active'));b.classList.add('active');}
+function render(){let q=document.getElementById('busca').value.toLowerCase();let h='';
+servs.forEach((s,i)=>{if(s.n.toLowerCase().includes(q)){h+='<div class=card><b>'+s.n+'</b><br>R$ '+s.p+'<br><button class=btn style=background:#b03060 onclick=escolher('+i+')>Escolher</button></div>';}});
+document.getElementById('lista').innerHTML=h;let ha='';servs.forEach((s,i)=>{ha+='<div class=card>'+s.n+' - R$ '+s.p+' <button onclick=delS('+i+')>X</button></div>';});document.getElementById('listaAd').innerHTML=ha;
+let tot=0;ags.forEach(a=>tot+=a.v);document.getElementById('fat').innerText=tot.toFixed(2);
+document.getElementById('extrato').innerHTML=ags.map(a=>'<div class=card>'+a.n+' - '+a.s+'</div>').join('');}
+function escolher(i){sel=servs[i];document.getElementById('resumo').innerHTML='<div class=pix><b>'+sel.n+'</b><br>Total R$ '+sel.p+'<br>Sinal 50%: R$ '+(sel.p/2).toFixed(2)+'<br><small>PIX: 91984023502</small></div>';}
+function agendar(){let n=document.getElementById('nome').value;let d=document.getElementById('data').value;let h=document.getElementById('hora').value;if(!sel){alert('Escolha procedimento');return;}if(!n||!d){alert('Preencha nome e data');return;}ags.push({n:n,s:sel.n,v:sel.p});render();window.open('https://wa.me/5591984023502?text='+encodeURIComponent('Ola! Sou '+n+', quero '+sel.n+' dia '+d+' as '+h));}
+function novoServ(){let n=prompt('Nome:');let p=parseFloat(prompt('Preco:'));if(n&&p){servs.push({n:n,p:p});render();}}
+function delS(i){servs.splice(i,1);render();}
+render();</script></body></html>
