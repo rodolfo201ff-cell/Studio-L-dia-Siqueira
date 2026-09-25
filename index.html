@@ -1,101 +1,313 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin - Studio Lidia Siqueira</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-body{font-family:Arial;background:#fff5f7;margin:0;padding:10px}
-.card{background:#fff;padding:15px;border-radius:10px;margin:10px 0;box-shadow:0 2px 5px rgba(0,0,0,.1)}
-.btn{background:#b03060;color:#fff;border:0;padding:10px;border-radius:8px;cursor:pointer;margin:5px 0;width:100%}
-.btn2{background:#666;color:#fff;border:0;padding:6px;border-radius:6px;cursor:pointer;font-size:12px}
-input,select{width:100%;padding:10px;margin:5px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}
-.alerta{background:#ffdddd;border-left:5px solid red}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-h2{color:#b03060}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Studio Lídia Siqueira</title>
+    <!-- Tailwind CSS CDN (Estilização) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN (Gráficos) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-<h2>Admin Studio Lidia Siqueira</h2>
-<div class="grid">
-<div class="card"><b>Hoje</b><h3 id="fatHoje">R$0</h3></div>
-<div class="card"><b>Mês</b><h3 id="fatMes">R$0</h3></div>
-<div class="card"><b>Lucro Mês</b><h3 id="lucroMes">R$0</h3></div>
-<div class="card"><b>Alertas</b><h3 id="numAlertas">0</h3></div>
-</div>
-<div class="card" id="alertas"></div>
+<body class="bg-gray-100 font-sans p-4 md:p-8">
 
-<div class="card"><h3>Lançar Venda</h3>
-<select id="vServ"></select><input id="vCli" placeholder="Cliente">
-<select id="vPag"><option>Pix</option><option>Cartão Crédito</option><option>Débito</option><option>Dinheiro</option></select>
-<button class="btn" onclick="vender()">Concluir e Baixar Estoque</button>
-</div>
+    <div class="max-w-7xl mx-auto space-y-8">
+        
+        <!-- CABEÇALHO -->
+        <header class="bg-white p-6 rounded-xl shadow-md flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Studio Lídia Siqueira</h1>
+                <p class="text-sm text-gray-500">Painel de Controle Interno e Gestão</p>
+            </div>
+            <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">Sistema Ativo</span>
+        </header>
 
-<div class="card"><h3>Produtos</h3>
-<input id="pNome" placeholder="Nome"><input id="pQtd" type="number" placeholder="Qtd atual">
-<input id="pMin" type="number" placeholder="Qtd mínima"><input id="pCusto" type="number" placeholder="Custo R$">
-<button class="btn" onclick="addProd()">Adicionar</button><div id="listaProd"></div>
-</div>
+        <!-- CARDS DE RESUMO / INDICADORES -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-xl shadow border-l-4 border-green-500">
+                <p class="text-sm text-gray-500">Vendas Hoje</p>
+                <h3 id="cardVendasHoje" class="text-2xl font-bold text-gray-800">R$ 0,00</h3>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow border-l-4 border-blue-500">
+                <p class="text-sm text-gray-500">Vendas do Mês</p>
+                <h3 id="cardVendasMes" class="text-2xl font-bold text-gray-800">R$ 0,00</h3>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow border-l-4 border-yellow-500">
+                <p class="text-sm text-gray-500">Total em Estoque</p>
+                <h3 id="cardTotalEstoque" class="text-2xl font-bold text-gray-800">0 itens</h3>
+            </div>
+            <div class="bg-white p-5 rounded-xl shadow border-l-4 border-red-500">
+                <p class="text-sm text-gray-500">Alertas de Estoque Baixo</p>
+                <h3 id="cardAlertasEstoque" class="text-2xl font-bold text-red-600">0 itens</h3>
+            </div>
+        </div>
 
-<div class="card"><h3>Serviços + Insumos</h3>
-<input id="sNome" placeholder="Nome serviço"><input id="sPreco" type="number" placeholder="Preço R$">
-<button class="btn" onclick="addServ()">Adicionar Serviço</button>
-<div id="listaServ"></div>
-</div>
+        <!-- SESSÃO GRÁFICO & REGISTRO DE VENDA -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- REGISTRAR NOVA VENDA -->
+            <div class="bg-white p-6 rounded-xl shadow-md space-y-4">
+                <h2 class="text-lg font-bold text-gray-800 border-b pb-2">Registrar Atendimento / Venda</h2>
+                <form id="formVenda" class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Serviço / Protocolo</label>
+                        <select id="vendaServico" class="w-full mt-1 p-2 border rounded-md" required>
+                            <option value="">Selecione...</option>
+                            <option value="Limpeza de Pele">Limpeza de Pele - R$ 99,99</option>
+                            <option value="Limpeza + Radiofrequência">Limpeza + Radiofrequência - R$ 129,99</option>
+                            <option value="Limpeza + Microagulhamento">Limpeza + Microagulhamento - R$ 149,99</option>
+                            <option value="Limpeza + Peeling Algas">Limpeza + Peeling Algas - R$ 189,99</option>
+                            <option value="Protocolo Pele Coreana">Protocolo Pele Coreana - R$ 219,99</option>
+                            <option value="Design + Henna">Design + Henna - R$ 39,99</option>
+                            <option value="Combo Redutor">Combo Redutor - R$ 549,00</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Valor Cobrado (R$)</label>
+                        <input type="number" step="0.01" id="vendaValor" class="w-full mt-1 p-2 border rounded-md" placeholder="0.00" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Forma de Pagamento</label>
+                        <select id="vendaPagamento" class="w-full mt-1 p-2 border rounded-md" required>
+                            <option value="Pix">Pix</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Dinheiro">Dinheiro</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md font-semibold hover:bg-green-700 transition">Confirmar Venda</button>
+                </form>
+            </div>
 
-<div class="card"><h3>Vincular Insumo ao Serviço</h3>
-<select id="viServ"></select><select id="viProd"></select>
-<input id="viQtd" type="number" placeholder="Qtd gasta por sessão">
-<button class="btn" onclick="vincular()">Vincular</button>
-</div>
+            <!-- GRÁFICO ECONÔMICO -->
+            <div class="bg-white p-6 rounded-xl shadow-md lg:col-span-2">
+                <h2 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">Desempenho Econômico (Últimas Vendas)</h2>
+                <canvas id="graficoVendas" height="120"></canvas>
+            </div>
+        </div>
 
-<div class="card"><h3>Reposição</h3><select id="rProd"></select><input id="rQtd" type="number" placeholder="Qtd">
-<button class="btn" onclick="repor()">Adicionar</button></div>
+        <!-- SESSÃO DE ESTOQUE -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- CADASTRAR / REPOR ESTOQUE -->
+            <div class="bg-white p-6 rounded-xl shadow-md space-y-4">
+                <h2 class="text-lg font-bold text-gray-800 border-b pb-2">Repor / Adicionar Produto</h2>
+                <form id="formEstoque" class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nome do Insumo/Produto</label>
+                        <input type="text" id="prodNome" class="w-full mt-1 p-2 border rounded-md" placeholder="Ex: Soro Skimbooster, Henna..." required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Qtd. Adicionada</label>
+                            <input type="number" id="prodQtd" class="w-full mt-1 p-2 border rounded-md" placeholder="10" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Mínimo (Alerta)</label>
+                            <input type="number" id="prodMin" class="w-full mt-1 p-2 border rounded-md" placeholder="3" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Custo Unitário (R$)</label>
+                        <input type="number" step="0.01" id="prodCusto" class="w-full mt-1 p-2 border rounded-md" placeholder="25.00" required>
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 text-white py-2 rounded-md font-semibold hover:bg-purple-700 transition">Salvar no Estoque</button>
+                </form>
+            </div>
 
-<div class="card"><h3>Gráficos</h3><canvas id="g1"></canvas><canvas id="g2" style="margin-top:20px"></canvas></div>
-<div class="card"><h3>Vendas</h3><div id="listaVendas"></div></div>
+            <!-- TABELA DE ESTOQUE ATUAL -->
+            <div class="bg-white p-6 rounded-xl shadow-md lg:col-span-2 space-y-4">
+                <h2 class="text-lg font-bold text-gray-800 border-b pb-2">Controle Interno de Estoque</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-gray-600">
+                        <thead class="bg-gray-50 text-gray-700 uppercase text-xs">
+                            <tr>
+                                <th class="p-3">Produto</th>
+                                <th class="p-3">Qtd Atual</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3">Custo Un.</th>
+                                <th class="p-3">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaEstoque">
+                            <!-- Inserido dinamicamente via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-<script>
-let DB=JSON.parse(localStorage.getItem('studioDB2')||'{"prod":[],"serv":[],"vendas":[]}');
-function save(){localStorage.setItem('studioDB2',JSON.stringify(DB));atualizar();}
-function addProd(){DB.prod.push({nome:pNome.value,qtd:+pQtd.value,min:+pMin.value,custo:+pCusto.value});pNome.value=pQtd.value=pMin.value=pCusto.value='';save();}
-function addServ(){DB.serv.push({nome:sNome.value,preco:+sPreco.value,insumos:[]});sNome.value=sPreco.value='';save();}
-function vincular(){
- let s=DB.serv[+viServ.value], p=DB.prod[+viProd.value], q=+viQtd.value;
- s.insumos.push({nome:p.nome,qtd:q,custo:q*p.custo}); save(); alert('Vinculado!');
-}
-function repor(){DB.prod[+rProd.value].qtd+=+rQtd.value;save();}
-function vender(){
- let s=DB.serv[+vServ.value]; if(!s||!vCli.value){alert('Preencha');return;}
- let custoInsumos=0;
- s.insumos.forEach(ins=>{let pr=DB.prod.find(x=>x.nome===ins.nome); if(pr){pr.qtd-=ins.qtd; custoInsumos+=ins.custo;}});
- DB.vendas.push({data:new Date().toISOString(),cli:vCli.value,serv:s.nome,valor:s.preco,pag:vPag.value,custo:custoInsumos});
- vCli.value='';save();alert('Venda concluída com baixa!');
-}
-function atualizar(){
- let hoje=new Date().toISOString().slice(0,10), mes=hoje.slice(0,7), fh=0,fm=0,cm=0;
- DB.vendas.forEach(v=>{if(v.data.slice(0,10)===hoje)fh+=v.valor; if(v.data.slice(0,7)===mes){fm+=v.valor;cm+=v.custo;}});
- fatHoje.textContent='R$ '+fh.toFixed(2); fatMes.textContent='R$ '+fm.toFixed(2); lucroMes.textContent='R$ '+(fm-cm).toFixed(2);
- let al='',n=0; DB.prod.forEach(p=>{if(p.qtd<=p.min){n++;al+=`<div class="card alerta"><b>${p.nome}</b> - ${p.qtd} (min ${p.min})</div>`;}});
- numAlertas.textContent=n; alertas.innerHTML='<h3>Alertas</h3>'+(al||'OK');
- listaProd.innerHTML=DB.prod.map(p=>`<div>${p.nome} - ${p.qtd}un - R$${p.custo}</div>`).join('');
- listaServ.innerHTML=DB.serv.map(s=>`<div style="margin:8px 0;border-bottom:1px solid #eee"><b>${s.nome}</b> R$${s.preco}<br><small>${s.insumos.map(i=>i.nome+': '+i.qtd).join(', ')||'sem insumos'}</small></div>`).join('');
- let os=DB.serv.map((s,i)=>`<option value="${i}">${s.nome}</option>`).join('');
- vServ.innerHTML=os; viServ.innerHTML=os;
- let op=DB.prod.map((p,i)=>`<option value="${i}">${p.nome}</option>`).join('');
- viProd.innerHTML=op; rProd.innerHTML=op;
- listaVendas.innerHTML=DB.vendas.map(v=>`<div>${v.data.slice(0,10)} - ${v.cli} - ${v.serv} R$${v.valor}</div>`).join('');
- desenhar();
-}
-let c1,c2;
-function desenhar(){
- if(c1)c1.destroy(); if(c2)c2.destroy();
- let pd={};DB.vendas.forEach(v=>{let d=v.data.slice(0,10);pd[d]=(pd[d]||0)+v.valor;});
- c1=new Chart(g1,{type:'line',data:{labels:Object.keys(pd),[STRIPPED]
- let pp={};DB.vendas.forEach(v=>{pp[v.pag]=(pp[v.pag]||0)+v.valor;});
- c2=new Chart(g2,{type:'doughnut',data:{labels:Object.keys(pp),[STRIPPED]
-}
-atualizar();
-</script>
+        </div>
+
+    </div>
+
+    <!-- LÓGICA EM JAVASCRIPT -->
+    <script>
+        // Dados no LocalStorage ou Padrão Inicial
+        let estoque = JSON.parse(localStorage.getItem('studio_estoque')) || [
+            { id: 1, nome: "Skimbooster", qtd: 8, min: 3, custo: 45.00 },
+            { id: 2, nome: "Soro P/ Microagulhamento", qtd: 2, min: 5, custo: 30.00 },
+            { id: 3, nome: "Kit Peeling de Algas", qtd: 1, min: 2, custo: 80.00 }
+        ];
+
+        let vendas = JSON.parse(localStorage.getItem('studio_vendas')) || [];
+
+        // Inicializar Gráfico
+        const ctx = document.getElementById('graficoVendas').getContext('2d');
+        let chartVendas = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Faturamento (R$)',
+                    data: [],
+                    backgroundColor: 'rgba(147, 51, 234, 0.6)',
+                    borderColor: 'rgba(147, 51, 234, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+
+        // Atualizar Dashboard
+        function atualizarTudo() {
+            salvarDados();
+            renderTabelaEstoque();
+            renderResumos();
+            renderGrafico();
+        }
+
+        function salvarDados() {
+            localStorage.setItem('studio_estoque', JSON.stringify(estoque));
+            localStorage.setItem('studio_vendas', JSON.stringify(vendas));
+        }
+
+        // Preencher Tabela de Estoque
+        function renderTabelaEstoque() {
+            const tbody = document.getElementById('tabelaEstoque');
+            tbody.innerHTML = '';
+
+            let alertasCount = 0;
+            let totalItens = 0;
+
+            estoque.forEach((item, index) => {
+                totalItens += Number(item.qtd);
+                const isBaixo = Number(item.qtd) <= Number(item.min);
+                if (isBaixo) alertasCount++;
+
+                const statusBadge = isBaixo 
+                    ? `<span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded font-bold">Estoque Baixo</span>`
+                    : `<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">OK</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-3 font-medium text-gray-800">${item.nome}</td>
+                        <td class="p-3 font-bold">${item.qtd}</td>
+                        <td class="p-3">${statusBadge}</td>
+                        <td class="p-3">R$ ${Number(item.custo).toFixed(2)}</td>
+                        <td class="p-3 space-x-2">
+                            <button onclick="alterarQtd(${index}, 1)" class="bg-blue-500 text-white px-2 py-1 rounded text-xs">+1</button>
+                            <button onclick="alterarQtd(${index}, -1)" class="bg-yellow-500 text-white px-2 py-1 rounded text-xs">-1</button>
+                            <button onclick="removerItem(${index})" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Excluir</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('cardTotalEstoque').innerText = `${totalItens} itens`;
+            document.getElementById('cardAlertasEstoque').innerText = `${alertasCount} atenção`;
+        }
+
+        // Alterar Quantidade Rapidamente
+        function alterarQtd(index, valor) {
+            estoque[index].qtd = Math.max(0, Number(estoque[index].qtd) + valor);
+            atualizarTudo();
+        }
+
+        // Remover Item
+        function removerItem(index) {
+            estoque.splice(index, 1);
+            atualizarTudo();
+        }
+
+        // Formulário Repor Estoque
+        document.getElementById('formEstoque').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('prodNome').value;
+            const qtd = Number(document.getElementById('prodQtd').value);
+            const min = Number(document.getElementById('prodMin').value);
+            const custo = Number(document.getElementById('prodCusto').value);
+
+            // Verificar se já existe
+            const itemExistente = estoque.find(i => i.nome.toLowerCase() === nome.toLowerCase());
+            if (itemExistente) {
+                itemExistente.qtd += qtd;
+                itemExistente.custo = custo;
+            } else {
+                estoque.push({ id: Date.now(), nome, qtd, min, custo });
+            }
+
+            e.target.reset();
+            atualizarTudo();
+        });
+
+        // Formulário Registrar Venda
+        document.getElementById('formVenda').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const servico = document.getElementById('vendaServico').value;
+            const valor = Number(document.getElementById('vendaValor').value);
+            const pagamento = document.getElementById('vendaPagamento').value;
+            const data = new Date().toISOString();
+
+            vendas.push({ servico, valor, pagamento, data });
+            e.target.reset();
+            atualizarTudo();
+        });
+
+        // Preencher o valor automático ao selecionar o serviço
+        document.getElementById('vendaServico').addEventListener('change', (e) => {
+            const tabelaPrecos = {
+                "Limpeza de Pele": 99.99,
+                "Limpeza + Radiofrequência": 129.99,
+                "Limpeza + Microagulhamento": 149.99,
+                "Limpeza + Peeling Algas": 189.99,
+                "Protocolo Pele Coreana": 219.99,
+                "Design + Henna": 39.99,
+                "Combo Redutor": 549.00
+            };
+            const val = tabelaPrecos[e.target.value] || "";
+            document.getElementById('vendaValor').value = val;
+        });
+
+        // Calcular Resumos Financeiros
+        function renderResumos() {
+            const hojeStr = new Date().toISOString().split('T')[0];
+            const mesAtual = new Date().getMonth();
+
+            let totalHoje = 0;
+            let totalMes = 0;
+
+            vendas.forEach(v => {
+                const dataVenda = new Date(v.data);
+                const dataStr = v.data.split('T')[0];
+
+                if (dataStr === hojeStr) totalHoje += v.valor;
+                if (dataVenda.getMonth() === mesAtual) totalMes += v.valor;
+            });
+
+            document.getElementById('cardVendasHoje').innerText = `R$ ${totalHoje.toFixed(2)}`;
+            document.getElementById('cardVendasMes').innerText = `R$ ${totalMes.toFixed(2)}`;
+        }
+
+        // Renderizar Gráfico
+        function renderGrafico() {
+            const ultimasVendas = vendas.slice(-7); // exibe as últimas 7 vendas
+            chartVendas.data.labels = ultimasVendas.map(v => v.servico);
+            chartVendas.data.datasets[0].data = ultimasVendas.map(v => v.valor);
+            chartVendas.update();
+        }
+
+        // Iniciar na Carga
+        atualizarTudo();
+    </script>
 </body>
 </html>
