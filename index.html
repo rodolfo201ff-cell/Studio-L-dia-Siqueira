@@ -35,11 +35,9 @@
 
   <!-- TOP HEADER -->
   <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur border-b border-brand-800/40 px-4 py-3 flex items-center justify-between shadow-lg">
-    <!-- LOGOMARCA EM DESTAQUE NO CANTO SUPERIOR ESQUERDO -->
     <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('servicos')">
       <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-brand-accent shadow-md bg-slate-950 flex items-center justify-center">
-        <!-- Caminho da logo oficial corrigido para logo.png -->
-        <img src="logo.png" alt="Logo Studio Lídia Siqueira" class="w-full h-full object-cover">
+        <img src="logo.png?v=2" alt="Logo Studio Lídia Siqueira" class="w-full h-full object-cover">
       </div>
       <div>
         <h1 class="text-base font-bold tracking-wide text-brand-50 flex items-center gap-2">
@@ -49,13 +47,13 @@
       </div>
     </div>
 
-    <!-- MENU 3 BARRINHAS (EXCLUSIVO ADMIN INTERNO) -->
-    <button onclick="toggleAdminModal()" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-brand-800 text-brand-accent transition flex items-center justify-center border border-brand-500/30" title="Área Restrita do Administrador">
+    <!-- MENU 3 BARRINHAS (PAINEL DA PROPRIETÁRIA) -->
+    <button onclick="toggleAdminModal()" class="p-2.5 rounded-lg bg-slate-800/80 hover:bg-brand-800 text-brand-accent transition flex items-center justify-center border border-brand-500/30" title="Painel da Proprietária">
       <i class="fa-solid fa-bars text-xl"></i>
     </button>
   </header>
 
-  <!-- BARRA DE NAVEGAÇÃO PRINCIPAL (CLIENTE) -->
+  <!-- BARRA DE NAVEGAÇÃO PRINCIPAL -->
   <nav class="bg-slate-900 border-b border-slate-800 sticky top-[65px] z-30">
     <div class="max-w-md mx-auto flex justify-around text-xs font-semibold text-slate-400">
       <button id="tab-servicos" onclick="switchTab('servicos')" class="py-3 px-2 flex-1 text-center border-b-2 border-brand-accent text-brand-accent transition font-bold">
@@ -73,14 +71,14 @@
   <!-- CONTEÚDO PRINCIPAL -->
   <main class="flex-1 max-w-md mx-auto w-full p-4 pb-20">
 
-    <!-- ABA 1: SERVIÇOS E PROCEDIMENTOS -->
+    <!-- ABA 1: SERVIÇOS -->
     <section id="sec-servicos" class="space-y-4">
       <div class="bg-gradient-to-r from-brand-900 to-slate-900 p-4 rounded-xl border border-brand-500/20 text-center">
         <h2 class="text-base font-bold text-brand-accent mb-1"><i class="fa-solid fa-gem mr-1"></i> Nosso Catálogo de Procedimentos</h2>
         <p class="text-xs text-slate-300">Selecione o tratamento desejado para agendar sua consulta estética.</p>
       </div>
 
-      <!-- Filtros de Categoria -->
+      <!-- Filtros -->
       <div class="flex space-x-2 overflow-x-auto no-scrollbar pb-1 text-xs">
         <button onclick="filterCat('todos')" class="bg-brand-500 text-white px-3 py-1.5 rounded-full whitespace-nowrap">Todos</button>
         <button onclick="filterCat('facial')" class="bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full whitespace-nowrap hover:bg-slate-700">Facial</button>
@@ -90,12 +88,10 @@
       </div>
 
       <!-- Grid de Procedimentos -->
-      <div id="lista-procedimentos" class="grid grid-cols-1 gap-3">
-        <!-- Renderizado dinamicamente via JS -->
-      </div>
+      <div id="lista-procedimentos" class="grid grid-cols-1 gap-3"></div>
     </section>
 
-    <!-- ABA 2: AGENDAMENTO DE CONSULTA -->
+    <!-- ABA 2: AGENDAMENTO -->
     <section id="sec-agendamento" class="hidden space-y-4">
       <div class="bg-slate-900 p-4 rounded-xl border border-slate-800">
         <h2 class="text-base font-bold text-brand-accent mb-3 flex items-center">
@@ -115,9 +111,7 @@
 
           <div>
             <label class="block text-slate-300 mb-1">Procedimento Selecionado</label>
-            <select id="cli-servico" onchange="updateValorAgendamento()" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-brand-accent">
-              <!-- Opções inseridas dinamicamente -->
-            </select>
+            <select id="cli-servico" onchange="updateValorAgendamento()" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-100 focus:outline-none focus:border-brand-accent"></select>
           </div>
 
           <div class="grid grid-cols-2 gap-2">
@@ -138,14 +132,13 @@
             </div>
           </div>
 
-          <!-- Resumo de Valores -->
           <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1">
             <div class="flex justify-between text-slate-400">
-              <span>Valor Total do Procedimento:</span>
+              <span>Valor Total:</span>
               <strong id="resumo-total" class="text-slate-100">R$ 0,00</strong>
             </div>
             <div class="flex justify-between text-brand-accent font-semibold">
-              <span>Sinal de Reserva (50% via Pix):</span>
+              <span>Sinal de Reserva (50%):</span>
               <strong id="resumo-sinal">R$ 0,00</strong>
             </div>
           </div>
@@ -157,20 +150,17 @@
       </div>
     </section>
 
-    <!-- ABA 3: PAGAMENTO VIA PIX OU CARTÃO -->
+    <!-- ABA 3: PAGAMENTO -->
     <section id="sec-pagamento" class="hidden space-y-4">
       <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-center space-y-3">
         <h2 class="text-base font-bold text-brand-accent flex items-center justify-center">
           <i class="fa-solid fa-qrcode mr-2"></i> Pagamento da Reserva (Pix)
         </h2>
-        <p class="text-xs text-slate-300">
-          Para garantir o seu horário no Studio Lídia Siqueira, efetue o pagamento do sinal de 50%.
-        </p>
+        <p class="text-xs text-slate-300">Para garantir o seu horário, efetue o pagamento do sinal de 50%.</p>
 
-        <!-- Card da Chave Pix -->
         <div class="bg-slate-950 p-4 rounded-xl border border-brand-500/30 text-left space-y-2">
           <div class="flex justify-between text-xs text-slate-400">
-            <span>Chave Pix CNPJ / Telefone:</span>
+            <span>Chave Pix:</span>
             <span class="text-emerald-400 font-bold"><i class="fa-solid fa-shield-check"></i> Recebedor Oficial</span>
           </div>
           <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded-lg border border-slate-800">
@@ -182,87 +172,56 @@
           <p class="text-[11px] text-slate-400">Nome: <strong>Studio Lídia Siqueira Estética e Beleza</strong></p>
         </div>
 
-        <!-- Botão WhatsApp para Envio de Comprovante -->
-        <div class="pt-2">
-          <button onclick="enviarWhats()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-emerald-500 transition flex items-center justify-center gap-2">
-            <i class="fa-brands fa-whatsapp text-lg"></i> Confirmar & Enviar Comprovante no Zap
-          </button>
-        </div>
+        <button onclick="enviarWhats()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-emerald-500 transition flex items-center justify-center gap-2">
+          <i class="fa-brands fa-whatsapp text-lg"></i> Confirmar & Enviar Comprovante no Zap
+        </button>
       </div>
     </section>
 
   </main>
 
-  <!-- MODAL DE ADMINISTRAÇÃO INTERNA (MENU 3 BARRINHAS) -->
+  <!-- PAINEL DE GESTÃO FÁCIL (PROPRIETÁRIA) -->
   <div id="modal-admin" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-brand-500/40 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl p-4 text-xs space-y-4">
       
-      <!-- Modal Header -->
       <div class="flex justify-between items-center border-b border-slate-800 pb-2">
         <h3 class="font-bold text-sm text-brand-accent flex items-center">
-          <i class="fa-solid fa-sliders mr-2"></i> Painel do Administrador
+          <i class="fa-solid fa-sliders mr-2"></i> Painel do Studio
         </h3>
         <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white text-base">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <!-- Login do Admin -->
+      <!-- Login -->
       <div id="admin-login-box" class="space-y-3 py-4">
-        <p class="text-slate-300 text-center">Informe a senha master do Studio para acessar as configurações internas:</p>
-        <input type="password" id="admin-pass" placeholder="Digite a senha master" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-100 text-center focus:outline-none focus:border-brand-accent">
+        <p class="text-slate-300 text-center">Informe a senha para acessar as configurações:</p>
+        <input type="password" id="admin-pass" placeholder="Digite a senha" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-100 text-center focus:outline-none focus:border-brand-accent">
         <button onclick="autenticarAdmin()" class="w-full bg-brand-500 text-white font-bold py-2.5 rounded-lg hover:bg-brand-600">Entrar no Painel</button>
       </div>
 
-      <!-- Painel Interno Liberado -->
+      <!-- Conteúdo do Painel -->
       <div id="admin-content" class="hidden space-y-6">
         
-        <!-- NAVEGAÇÃO INTERNA ADMIN -->
         <div class="flex gap-2 border-b border-slate-800 pb-2 overflow-x-auto text-[11px]">
-          <button onclick="adminSubTab('estoque')" class="bg-brand-800 text-white px-3 py-1 rounded font-bold">1. Gestão de Estoque</button>
-          <button onclick="adminSubTab('add-procedimento')" class="bg-slate-800 text-slate-300 px-3 py-1 rounded hover:bg-slate-700">+ Novo Procedimento</button>
-          <button onclick="adminSubTab('edit-procedimentos')" class="bg-slate-800 text-slate-300 px-3 py-1 rounded hover:bg-slate-700">Editar Preços e Fotos</button>
+          <button onclick="adminSubTab('add-procedimento')" class="bg-brand-800 text-white px-3 py-1 rounded font-bold">+ Novo Serviço</button>
+          <button onclick="adminSubTab('edit-procedimentos')" class="bg-slate-800 text-slate-300 px-3 py-1 rounded hover:bg-slate-700">Trocar Fotos/Preços</button>
         </div>
 
-        <!-- SEÇÃO 1: GESTÃO DE ESTOQUE -->
-        <div id="admin-sec-estoque" class="space-y-4">
+        <!-- CADASTRAR NOVO SERVIÇO COM UPLOAD DA GALERIA -->
+        <div id="admin-sec-add-procedimento" class="space-y-3">
           <h4 class="font-bold text-slate-200 text-xs border-b border-slate-800 pb-1 text-brand-accent">
-            <i class="fa-solid fa-boxes-stacked mr-1"></i> Controle de Estoque de Insumos
+            <i class="fa-solid fa-plus-circle mr-1"></i> Adicionar Novo Serviço
           </h4>
 
-          <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
-            <span class="font-bold text-slate-300 block text-[11px]">Adicionar Novo Produto ou Repor Estoque:</span>
-            <div class="grid grid-cols-2 gap-2">
-              <input type="text" id="stk-nome" placeholder="Nome (Ex: Toxina Botulínica)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-slate-100">
-              <input type="number" id="stk-qtd" placeholder="Quantidade" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-slate-100">
-            </div>
-            <button onclick="adicionarInsumo()" class="w-full bg-emerald-600 text-white font-bold py-1.5 rounded hover:bg-emerald-500">
-              <i class="fa-solid fa-plus mr-1"></i> Registrar Entrada no Estoque
-            </button>
-          </div>
-
-          <div class="space-y-2">
-            <span class="font-bold text-slate-300 block text-[11px]">Insumos no Estoque:</span>
-            <div id="admin-lista-estoque" class="space-y-2">
-              <!-- Renderizado dinamicamente -->
-            </div>
-          </div>
-        </div>
-
-        <!-- SEÇÃO 2: ACRESCENTAR NOVO PROCEDIMENTO -->
-        <div id="admin-sec-add-procedimento" class="hidden space-y-3">
-          <h4 class="font-bold text-slate-200 text-xs border-b border-slate-800 pb-1 text-brand-accent">
-            <i class="fa-solid fa-plus-circle mr-1"></i> Cadastrar Novo Procedimento
-          </h4>
-
-          <form onsubmit="cadastrarProcedimento(event)" class="space-y-2 text-xs">
+          <form onsubmit="cadastrarProcedimento(event)" class="space-y-3 text-xs">
             <div>
-              <label class="block text-slate-400">Nome do Procedimento</label>
-              <input type="text" id="new-proc-nome" required placeholder="Ex: Peeling de Diamante VIP" class="w-full bg-slate-950 border border-slate-800 rounded p-2 text-slate-100">
+              <label class="block text-slate-400 mb-1">Nome do Serviço</label>
+              <input type="text" id="new-proc-nome" required placeholder="Ex: Peeling Químico" class="w-full bg-slate-950 border border-slate-800 rounded p-2 text-slate-100">
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block text-slate-400">Categoria</label>
+                <label class="block text-slate-400 mb-1">Categoria</label>
                 <select id="new-proc-cat" class="w-full bg-slate-950 border border-slate-800 rounded p-2 text-slate-100">
                   <option value="facial">Facial</option>
                   <option value="corporal">Corporal</option>
@@ -271,69 +230,63 @@
                 </select>
               </div>
               <div>
-                <label class="block text-slate-400">Preço (R$)</label>
-                <input type="number" id="new-proc-preco" required placeholder="250" class="w-full bg-slate-950 border border-slate-800 rounded p-2 text-slate-100">
+                <label class="block text-slate-400 mb-1">Preço (R$)</label>
+                <input type="number" id="new-proc-preco" required placeholder="220" class="w-full bg-slate-950 border border-slate-800 rounded p-2 text-slate-100">
               </div>
             </div>
             <div>
-              <label class="block text-slate-400">Descrição Curta</label>
-              <input type="text" id="new-proc-desc" required placeholder="Tratamento para rejuvenescimento..." class="w-full bg-slate-950 border border-slate-800 rounded p-2 text-slate-100">
+              <label class="block text-slate-400 mb-1">Descrição Curta</label>
+              <input type="text" id="new-proc-desc" required placeholder="Renovação celular e clareamento..." class="w-full bg-slate-950 border border-slate-800 rounded p-2 text-slate-100">
             </div>
             <div>
-              <label class="block text-slate-400">Link/URL da Foto Real</label>
-              <input type="url" id="new-proc-img" required placeholder="https://exemplo.com/foto-real.jpg" class="w-full bg-slate-950 border border-slate-800 rounded p-2 text-slate-100">
+              <label class="block text-slate-400 mb-1">Escolher Foto da Galeria / Celular</label>
+              <input type="file" id="new-proc-img-file" accept="image/*" required class="w-full bg-slate-950 border border-slate-800 rounded p-2 text-slate-100 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-brand-600 file:text-white hover:file:bg-brand-500">
             </div>
 
-            <button type="submit" class="w-full bg-brand-500 text-white font-bold py-2 rounded hover:bg-brand-600 mt-2">
-              Adicionar ao Catálogo
+            <button type="submit" class="w-full bg-brand-500 text-white font-bold py-2.5 rounded-lg hover:bg-brand-600 mt-2">
+              Salvar Serviço no Site
             </button>
           </form>
         </div>
 
-        <!-- SEÇÃO 3: EDITAR PROCEDIMENTOS EXISTENTES -->
+        <!-- TROCAR FOTO DE SERVIÇOS JÁ EXISTENTES DA GALERIA -->
         <div id="admin-sec-edit-procedimentos" class="hidden space-y-3">
           <h4 class="font-bold text-slate-200 text-xs border-b border-slate-800 pb-1 text-brand-accent">
-            <i class="fa-solid fa-pen-to-square mr-1"></i> Alterar Preços e Fotos Reais
+            <i class="fa-solid fa-image mr-1"></i> Trocar Fotos ou Preços
           </h4>
-          <p class="text-[11px] text-slate-400">Atualize os valores ou insira os links das fotos reais tiradas no Studio:</p>
+          <p class="text-[11px] text-slate-400">Escolha uma nova foto direto do seu celular para substituir:</p>
 
-          <div id="admin-lista-procedimentos-edit" class="space-y-3 max-h-80 overflow-y-auto pr-1">
-            <!-- Renderizado via JS -->
-          </div>
+          <div id="admin-lista-procedimentos-edit" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
         </div>
 
-        <!-- Botão Sair -->
         <button onclick="logoutAdmin()" class="w-full bg-slate-800 text-slate-300 py-2 rounded hover:bg-slate-700 mt-4">
-          Sair do Painel Admin
+          Sair do Painel
         </button>
       </div>
 
     </div>
   </div>
 
-  <!-- SCRIPT JS -->
+  <!-- JAVASCRIPT -->
   <script>
-    let procedimentos = [
+    const defaultProcs = [
       { id: 1, cat: 'facial', nome: 'Limpeza de Pele Profunda com Fototerapia', preco: 180, desc: 'Higienização profunda, extração e LED cicatrizante.', img: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=300' },
       { id: 2, cat: 'facial', nome: 'Peeling Químico Renovador', preco: 220, desc: 'Renovação celular e clareamento de manchas.', img: 'https://images.unsplash.com/photo-1512290900673-7002df1f2008?w=300' },
-      { id: 3, cat: 'facial', nome: 'Microagulhamento Facial com Drug Delivery', preco: 350, desc: 'Estímulo intenso de colágeno e rejuvenescimento.', img: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=300' },
-      { id: 4, cat: 'facial', nome: 'Botox Facial (3 Áreas)', preco: 750, desc: 'Prevenção e atenuação de linhas de expressão.', img: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300' },
-      { id: 5, cat: 'sobrancelhas', nome: 'Design de Sobrancelhas Simples', preco: 45, desc: 'Modelagem perfeita do olhar de acordo com o visagismo.', img: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300' }
+      { id: 3, cat: 'facial', nome: 'Microagulhamento Facial', preco: 350, desc: 'Estímulo intenso de colágeno e rejuvenescimento.', img: 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=300' },
+      { id: 4, cat: 'facial', nome: 'Botox Facial (3 Áreas)', preco: 750, desc: 'Prevenção e atenuação de linhas de expressão.', img: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300' }
     ];
 
-    let estoqueInsumos = [
-      { id: 1, nome: 'Ácido Hialurônico 1ml', qtd: 4 },
-      { id: 2, nome: 'Toxina Botulínica 100U', qtd: 12 },
-      { id: 3, nome: 'Kit Microagulhamento Mono', qtd: 2 }
-    ];
-
+    let procedimentos = JSON.parse(localStorage.getItem('studio_procedimentos')) || defaultProcs;
     let agendamentoAtual = null;
 
     window.onload = function() {
       renderProcedimentos(procedimentos);
       populateSelectProcedimentos();
-      renderEstoqueAdmin();
     };
+
+    function saveStorage() {
+      localStorage.setItem('studio_procedimentos', JSON.stringify(procedimentos));
+    }
 
     function switchTab(tab) {
       document.getElementById('sec-servicos').classList.add('hidden');
@@ -480,14 +433,10 @@
     }
 
     function adminSubTab(sub) {
-      document.getElementById('admin-sec-estoque').classList.add('hidden');
       document.getElementById('admin-sec-add-procedimento').classList.add('hidden');
       document.getElementById('admin-sec-edit-procedimentos').classList.add('hidden');
 
-      if(sub === 'estoque') {
-        document.getElementById('admin-sec-estoque').classList.remove('hidden');
-        renderEstoqueAdmin();
-      } else if(sub === 'add-procedimento') {
+      if(sub === 'add-procedimento') {
         document.getElementById('admin-sec-add-procedimento').classList.remove('hidden');
       } else if(sub === 'edit-procedimentos') {
         document.getElementById('admin-sec-edit-procedimentos').classList.remove('hidden');
@@ -495,76 +444,29 @@
       }
     }
 
-    function renderEstoqueAdmin() {
-      const container = document.getElementById('admin-lista-estoque');
-      container.innerHTML = '';
-
-      estoqueInsumos.forEach(item => {
-        container.innerHTML += `
-          <div class="flex justify-between items-center bg-slate-950 p-2 rounded border border-slate-800">
-            <div>
-              <p class="font-semibold text-slate-200">${item.nome}</p>
-              <p class="text-[10px] text-slate-400">Quantidade Atual: <strong class="text-brand-accent">${item.qtd} unidades</strong></p>
-            </div>
-            <div class="flex gap-1">
-              <button onclick="darBaixaEstoque(${item.id})" class="bg-rose-900/80 hover:bg-rose-700 text-rose-200 text-[10px] px-2 py-1 rounded border border-rose-600/30">
-                - 1 Baixa
-              </button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function adicionarInsumo() {
-      const nome = document.getElementById('stk-nome').value;
-      const qtd = parseInt(document.getElementById('stk-qtd').value);
-
-      if(!nome || isNaN(qtd)) {
-        alert('Por favor, preencha o nome do produto e a quantidade!');
-        return;
-      }
-
-      const itemExistente = estoqueInsumos.find(i => i.nome.toLowerCase() === nome.toLowerCase());
-      if(itemExistente) {
-        itemExistente.qtd += qtd;
-      } else {
-        estoqueInsumos.push({ id: Date.now(), nome, qtd });
-      }
-
-      document.getElementById('stk-nome').value = '';
-      document.getElementById('stk-qtd').value = '';
-      renderEstoqueAdmin();
-      alert('Entrada no estoque registrada com sucesso!');
-    }
-
-    function darBaixaEstoque(id) {
-      const item = estoqueInsumos.find(i => i.id === id);
-      if(item && item.qtd > 0) {
-        item.qtd--;
-        renderEstoqueAdmin();
-      } else {
-        alert('Estoque já está zerado!');
-      }
-    }
-
+    // CONVERTER FOTO DO CELULAR EM BASE64
     function cadastrarProcedimento(e) {
       e.preventDefault();
       const nome = document.getElementById('new-proc-nome').value;
       const cat = document.getElementById('new-proc-cat').value;
       const preco = parseFloat(document.getElementById('new-proc-preco').value);
       const desc = document.getElementById('new-proc-desc').value;
-      const img = document.getElementById('new-proc-img').value;
+      const fileInput = document.getElementById('new-proc-img-file');
 
-      const novoProc = { id: Date.now(), cat, nome, preco, desc, img };
-      procedimentos.push(novoProc);
-
-      renderProcedimentos(procedimentos);
-      populateSelectProcedimentos();
-
-      alert('Novo procedimento adicionado com sucesso ao catálogo!');
-      e.target.reset();
-      adminSubTab('edit-procedimentos');
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const base64Img = evt.target.result;
+          const novoProc = { id: Date.now(), cat, nome, preco, desc, img: base64Img };
+          procedimentos.push(novoProc);
+          saveStorage();
+          renderProcedimentos(procedimentos);
+          populateSelectProcedimentos();
+          alert('Serviço com a foto do celular adicionado com sucesso!');
+          e.target.reset();
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      }
     }
 
     function renderEditProcedimentosAdmin() {
@@ -584,13 +486,18 @@
                 <input type="number" id="edit-preco-${p.id}" value="${p.preco}" class="w-full bg-slate-900 border border-slate-700 rounded p-1 text-slate-100">
               </div>
               <div>
-                <label class="text-[10px] text-slate-400">Link Foto Real (URL):</label>
-                <input type="url" id="edit-img-${p.id}" value="${p.img}" class="w-full bg-slate-900 border border-slate-700 rounded p-1 text-slate-100">
+                <label class="text-[10px] text-slate-400">Trocar Foto (Galeria):</label>
+                <input type="file" id="edit-file-${p.id}" accept="image/*" class="w-full bg-slate-900 border border-slate-700 rounded p-0.5 text-[10px] text-slate-100">
               </div>
             </div>
-            <button onclick="salvarEdicaoProcedimento(${p.id})" class="w-full bg-brand-600 hover:bg-brand-500 text-white text-[10px] font-bold py-1 rounded">
-              Atualizar Procedimento
-            </button>
+            <div class="flex gap-2">
+              <button onclick="salvarEdicaoProcedimento(${p.id})" class="flex-1 bg-brand-600 hover:bg-brand-500 text-white text-[10px] font-bold py-1 rounded">
+                Salvar Alterações
+              </button>
+              <button onclick="excluirProcedimento(${p.id})" class="bg-rose-900 hover:bg-rose-800 text-rose-200 text-[10px] font-bold px-2 py-1 rounded">
+                Excluir
+              </button>
+            </div>
           </div>
         `;
       });
@@ -598,16 +505,39 @@
 
     function salvarEdicaoProcedimento(id) {
       const novoPreco = parseFloat(document.getElementById(`edit-preco-${id}`).value);
-      const novaImg = document.getElementById(`edit-img-${id}`).value;
-
+      const fileInput = document.getElementById(`edit-file-${id}`);
       const proc = procedimentos.find(p => p.id === id);
-      if(proc) {
-        proc.preco = novoPreco;
-        proc.img = novaImg;
 
+      if (proc) {
+        proc.preco = novoPreco;
+
+        if (fileInput.files && fileInput.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            proc.img = evt.target.result;
+            saveStorage();
+            renderProcedimentos(procedimentos);
+            populateSelectProcedimentos();
+            renderEditProcedimentosAdmin();
+            alert('Foto e preço atualizados com sucesso!');
+          };
+          reader.readAsDataURL(fileInput.files[0]);
+        } else {
+          saveStorage();
+          renderProcedimentos(procedimentos);
+          populateSelectProcedimentos();
+          alert('Preço atualizado com sucesso!');
+        }
+      }
+    }
+
+    function excluirProcedimento(id) {
+      if(confirm('Tem certeza que deseja excluir este procedimento?')) {
+        procedimentos = procedimentos.filter(p => p.id !== id);
+        saveStorage();
         renderProcedimentos(procedimentos);
         populateSelectProcedimentos();
-        alert('Procedimento atualizado com sucesso!');
+        renderEditProcedimentosAdmin();
       }
     }
   </script>
